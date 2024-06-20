@@ -1,0 +1,482 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manacoin - Cryptocurrency Project</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+            transition: background-color 0.5s ease;
+        }
+        .loading {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            background-color: #fff;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+        .loading img {
+            width: 100px;
+            height: 100px;
+        }
+        .loading .watermark {
+            margin-top: 10px;
+            font-size: 12px;
+            color: #888;
+        }
+        .container {
+            display: none;
+            width: 80%;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        .header {
+            background-color: #fff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+        .header-top {
+            display: flex;
+            align-items: center;
+            width: 100%;
+        }
+        .header img {
+            width: 50px;
+            height: 50px;
+            margin-right: 10px;
+            border-radius: 50%;
+        }
+        .header .nickname {
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-right: 20px;
+        }
+        .header .blockchain-info {
+            font-size: 0.8em;
+            color: #888;
+            margin-top: 5px;
+        }
+        .social-media {
+            margin-top: 10px;
+        }
+        .social-media a {
+            margin-right: 10px;
+        }
+        .social-media img {
+            width: 24px;
+            height: 24px;
+        }
+        .header h1 {
+            margin: 0;
+            margin-top: 10px;
+        }
+        .balance {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+            cursor: pointer;
+        }
+        .balance .balance-amount {
+            font-size: 1.2em;
+            font-weight: bold;
+            margin-left: 10px;
+        }
+        .balance .toggle {
+            margin-left: 10px;
+            cursor: pointer;
+            font-size: 1em;
+            color: #007bff;
+            text-decoration: underline;
+        }
+        .balance-details {
+            display: none;
+            margin-top: 5px;
+            font-size: 0.9em;
+            color: #888;
+        }
+        .contract-address {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+        .contract-address input {
+            font-size: 1em;
+            border: none;
+            background: none;
+            color: #007bff;
+            cursor: pointer;
+            text-decoration: underline;
+            width: auto;
+        }
+        .contract-address input:focus {
+            outline: none;
+        }
+        .team {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-around;
+            margin-top: 20px;
+        }
+        .team-member {
+            width: 200px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .team-member img {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            margin-bottom: 10px;
+        }
+        .team-member .name {
+            font-weight: bold;
+            font-size: 1.2em;
+            margin-bottom: 5px;
+            position: relative;
+        }
+        .team-member .name::after {
+            content: '\2714';
+            font-size: 0.8em;
+            color: #1DA1F2;
+            position: absolute;
+            right: -15px;
+            top: 5px;
+        }
+        .team-member .anime {
+            font-size: 0.9em;
+            color: #888;
+            margin-bottom: 5px;
+        }
+        .team-member .waifu {
+            font-size: 0.9em;
+            color: #888;
+        }
+        .team-member a {
+            text-decoration: none;
+            color: #007bff;
+            transition: color 0.3s ease;
+        }
+        .team-member a:hover {
+            color: #0056b3;
+        }
+        .buttons {
+            display: flex;
+            justify-content: space-around;
+            margin-bottom: 20px;
+        }
+        .buttons button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 5px;
+            background-color: #007bff;
+            color: white;
+        }
+        /* Slider styles */
+        .slider {
+            position: relative;
+            max-width: 100%;
+            margin: auto;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .slides {
+            display: flex;
+            transition: transform 0.5s ease-in-out;
+        }
+        .slides img {
+            width: 100%;
+            border-radius: 8px;
+        }
+        .nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+        }
+        .nav button {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            border-radius: 50%;
+        }
+        /* Google Login Button */
+        .google-login {
+            display: inline-block;
+            background-color: #dd4b39;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 5px;
+            text-decoration: none;
+            text-align: center;
+            transition: background-color 0.3s ease;
+        }
+        .google-login:hover {
+            background-color: #c23321;
+        }
+        .sponsor {
+            margin-top: 20px;
+            text-align: center;
+            font-size: 0.9em;
+            color: #888;
+        }
+        .sponsor a {
+            color: #007bff;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+        .sponsor a:hover {
+            color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    <div class="loading">
+        <img src="https://via.placeholder.com/100" alt="Loading">
+        <div class="watermark">Manacoin</div>
+    </div>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <img src="https://via.placeholder.com/50" alt="Manacoin Logo">
+                <div>
+                    <div class="nickname">Manacoin</div>
+                    <div class="blockchain-info">Blockchain on the Polygon Network</div>
+                    <div class="balance" onclick="toggleBalanceDetails()">
+                        <span>Saldo: <span class="balance-amount">0 MNC</span></span>
+                        <span class="toggle">(tutup/buka)</span>
+                    </div>
+                    <div class="balance-details">
+                        Jumlah yang telah diisi dari pembelian: <span class="balance-amount">0 MNC</span>
+                    </div>
+                    <div class="contract-address">
+                        Alamat Kontrak: 
+                        <input type="text" value="0x1234567890abcdef1234567890abcdef12345678" id="contractAddress" readonly>
+                        <button onclick="copyContractAddress()">Salin</button>
+                    </div>
+                </div>
+            </div>
+            <div class="social-media">
+                <!-- Your social media links here -->
+            </div>
+            <h1>Welcome to Manacoin</h1>
+        </div>
+
+        <div class="buttons">
+            <button onclick="showSection('swap')">Swap</button>
+            <button onclick="showSection('intro')">Intro Manacoin</button>
+            <button onclick="showSection('about')">About</button>
+            <button onclick="showSection('team')">Meet the Team</button>
+            <button onclick="showSection('chart')">Chart</button>
+            <button onclick="showSection('buy')">Buy Manacoin</button>
+            <button onclick="showSection('history')">Transaction History</button>
+            <a href="#" class="google-login" onclick="handleGoogleLogin()">Login with Google</a>
+        </div>
+
+        <div class="slider">
+            <div class="slides">
+                <img src="https://via.placeholder.com/800x400" alt="Slide 1">
+                <img src="https://via.placeholder.com/800x400" alt="Slide 2">
+                <img src="https://via.placeholder.com/800x400" alt="Slide 3">
+            </div>
+            <div class="nav">
+                <button id="prev">❮</button>
+                <button id="next">❯</button>
+            </div>
+        </div>
+
+        <div class="section" id="swap" style="display: none;">
+            <h2>Swap Manacoin</h2>
+            <!-- Add your swap interface here -->
+        </div>
+
+        <div class="section" id="intro" style="display: none;">
+            <h2>Intro Manacoin</h2>
+            <p>Manacoin adalah sebuah cryptocurrency yang memberikan...</p>
+            <!-- Add more content about Manacoin here -->
+        </div>
+
+        <div class="section" id="about" style="display: none;">
+            <h2>About Manacoin</h2>
+            <p>Manacoin dibangun di atas jaringan Polygon, menyediakan transaksi yang cepat dan biaya rendah...</p>
+            <!-- Add more content about Manacoin here -->
+        </div>
+
+        <div class="section" id="team" style="display: none;">
+            <h2>Meet the Team</h2>
+            <div class="team">
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/100" alt="Team Member 1">
+                    <div class="name">shanachan</div>
+                    <div class="anime">Anime Favorit: <a href="https://myanimelist.net/anime/16498/Shingeki_no_Kyojin">Attack on Titan</a></div>
+                    <div class="waifu">Waifu Favorit: <a href="https://myanimelist.net/character/40861/Mikasa_Ackerman">Mikasa Ackerman</a></div>
+                </div>
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/100" alt="Team Member 2">
+                    <div class="name">lemon</div>
+                    <div class="anime">Anime Favorit: <a href="https://myanimelist.net/anime/32281/Re_Zero_kara_Hajimeru_Isekai_Seikatsu">Re:Zero</a></div>
+                    <div class="waifu">Waifu Favorit: <a href="https://myanimelist.net/character/119801/Rem">Rem</a></div>
+                </div>
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/100" alt="Team Member 3">
+                    <div class="name">Dzikri</div>
+                    <div class="anime">Anime Favorit: <a href="https://myanimelist.net/anime/1535/Death_Note">Death Note</a></div>
+                    <div class="waifu">Waifu Favorit: <a href="https://myanimelist.net/character/10/Amane_Misa">Misa Amane</a></div>
+                </div>
+                <div class="team-member">
+                    <img src="https://via.placeholder.com/100" alt="Team Member 4">
+                    <div class="name">adhit</div>
+                    <div class="anime">Anime Favorit: <a href="https://myanimelist.net/anime/31964/Boku_no_Hero_Academia">My Hero Academia</a></div>
+                    <div class="waifu">Waifu Favorit: <a href="https://myanimelist.net/character/110933/Hinata_Hyuga">Hinata Hyuga</a></div>
+                </div>
+            </div>
+            <div class="sponsor">
+                Sponsored by <a href="https://ranimev3.site" target="_blank">Anime/a>
+            </div>
+        </div>
+
+        <div class="section" id="chart" style="display: none;">
+            <h2>Manacoin Chart</h2>
+            <canvas id="cryptoChart"></canvas>
+        </div>
+
+        <div class="section" id="buy" style="display: none;">
+            <h2>Beli Manacoin</h2>
+            <p>Anda dapat membeli Manacoin melalui berbagai metode pembayaran:</p>
+            <ul>
+                <li>GoPay: <a href="https://example.com/buy-gopay" target="_blank">Beli dengan GoPay</a></li>
+                <li>Dana: <a href="https://example.com/buy-dana" target="_blank">Beli dengan Dana</a></li>
+                <li>OVO: <a href="https://example.com/buy-ovo" target="_blank">Beli dengan OVO</a></li>
+            </ul>
+        </div>
+
+        <div class="section" id="history" style="display: none;">
+            <h2>Histori Transaksi</h2>
+            <p>Lihat histori transaksi Anda di SushiSwap:</p>
+            <p><a href="https://example.com/transaction-history" target="_blank">Cek Histori Transaksi</a></p>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // JavaScript untuk layar loading dan perubahan warna latar belakang
+        const loadingScreen = document.querySelector('.loading');
+        const body = document.body;
+        const backgrounds = ['#f4f4f4', '#e0e0e0', '#d4d4d4'];
+        let backgroundIndex = 0;
+
+        function changeBackground() {
+            body.style.backgroundColor = backgrounds[backgroundIndex];
+            backgroundIndex = (backgroundIndex + 1) % backgrounds.length;
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            setInterval(changeBackground, 3000);
+
+            setTimeout(() => {
+                loadingScreen.style.display = 'none';
+                document.querySelector('.container').style.display = 'block';
+            }, 10000);
+        });
+
+        // Chart.js script untuk membuat grafik garis
+        const ctx = document.getElementById('cryptoChart').getContext('2d');
+        const cryptoChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July', 'september'],
+                datasets: [{
+                    label: 'Harga Manacoin',
+                    data: [65, 59, 80, 81, 56, 55, 40],
+                    borderColor: 'rgba(75, 192, 192, 1)',
+                    backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        });
+
+        function showSection(sectionId) {
+            const sections = document.querySelectorAll('.section');
+            sections.forEach(section => {
+                section.style.display = 'none';
+            });
+            document.getElementById(sectionId).style.display = 'block';
+        }
+
+        function handleGoogleLogin() {
+            // Handle Google login logic here
+            // Example: redirect to Google OAuth page
+            window.location.href = 'https://accounts.google.com/o/oauth2/auth?client_id=YOUR_CLIENT_ID&redirect_uri=YOUR_REDIRECT_URI&response_type=code&scope=email%20profile&state=STATE_STRING';
+        }
+
+        // JavaScript untuk slider gambar
+        let currentIndex = 0;
+        const slides = document.querySelector('.slides');
+        const images = document.querySelectorAll('.slides img');
+        const totalImages = images.length;
+
+        document.getElementById('prev').addEventListener('click', () => {
+            currentIndex = (currentIndex > 0) ? currentIndex - 1 : totalImages - 1;
+            updateSlider();
+        });
+
+        document.getElementById('next').addEventListener('click', () => {
+            currentIndex = (currentIndex < totalImages - 1) ? currentIndex + 1 : 0;
+            updateSlider();
+        });
+
+        function updateSlider() {
+            slides.style.transform = `translateX(${-currentIndex * 100}%)`;
+        }
+
+        // JavaScript untuk menampilkan dan menyembunyikan detail saldo
+        function toggleBalanceDetails() {
+            const balanceDetails = document.querySelector('.balance-details');
+            if (balanceDetails.style.display === 'none' || balanceDetails.style.display === '') {
+                balanceDetails.style.display = 'block';
+            } else {
+                balanceDetails.style.display = 'none';
+            }
+        }
+
+        // JavaScript untuk menyalin alamat kontrak
+        function copyContractAddress() {
+            const contractAddress = document.getElementById('contractAddress');
+            contractAddress.select();
+            contractAddress.setSelectionRange(0, 99999);
+            document.execCommand('copy');
+            alert('Alamat kontrak telah disalin: ' + contractAddress.value);
+        }
+    </script>
+</body>
+  </html>
